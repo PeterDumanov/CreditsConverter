@@ -9,18 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var isFirstSelected = true
-    @State private var isSecondSelected = false
     @State var currencies: [(name: String, value: String, isSelected: Bool)] = [
         ("Credit", "", true),
         ("Dollar", "", false),
         ("Euro", "", false)
     ]
 
+    private let buttonsValues = [
+        ["AC", "←", "%", "÷"],
+        ["7", "8", "9", "×"],
+        ["4", "5", "6", "-"],
+        ["1", "2", "3", "+"],
+        ["0", "+/-", ".", "="]
+    ]
     
     var body: some View {
         
-        ForEach(currencies, id: \.name) {currency in
+        ForEach(currencies, id: \.name) { currency in
             Text(currency.name)
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -37,6 +42,18 @@ struct ContentView: View {
                         }
                     }
                 }
+        }
+        ForEach(buttonsValues, id: \.first) { row in
+            HStack {
+                ForEach(row, id: \.self) { buttonText in
+                    Button {
+                        print(buttonText)
+                    } label: {
+                        Text(buttonText)
+                    }
+                    .padding()
+                }
+            }
         }
     }
 }
