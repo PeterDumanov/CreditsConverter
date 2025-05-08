@@ -8,14 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isFirstSelected = true
+    @State private var isSecondSelected = false
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        Text("PressMe")
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(isFirstSelected ? Color.orange : Color.blue, lineWidth: 2)
+                    )
+                    .onTapGesture {
+                        isFirstSelected.toggle()
+                        isSecondSelected.toggle()
+                    }
+        Text("PressMe")
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(isSecondSelected ? Color.orange : Color.blue, lineWidth: 2)
+                    )
+                    .onTapGesture {
+                        isSecondSelected.toggle()
+                        isFirstSelected.toggle()
+                    }
     }
 }
 
