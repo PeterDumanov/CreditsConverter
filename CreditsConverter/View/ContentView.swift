@@ -9,8 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     var currencies = ["EUR", "USD", "CRD"]
-    @State var values = Array(repeating: "0", count: 3)
+    @State var values = Array(repeating: "1", count: 3)
     @State var selectedCurrencyIndex = 0
+    @StateObject private var viewModel = ExchangeRateViewModel()
     
     let buttons = [
         ["1", "2", "3"],
@@ -53,6 +54,9 @@ struct ContentView: View {
             }
         }
         .padding()
+        .onAppear {
+            viewModel.loadRate()
+        }
     }
     
     private func buttonPressed(_ buttonText: String) {
