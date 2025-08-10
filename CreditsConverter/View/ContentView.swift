@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    var currencies = ["EUR", "USD", "CRD"]
-    @State var values = Array(repeating: "1", count: 3)
-    @State var selectedCurrencyIndex = 0
+
     @StateObject private var viewModel = ExchangeRateViewModel()
     
     let buttons = [
@@ -22,17 +20,16 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            ForEach(currencies.indices, id: \.self) { index in
-                Text(values[index])
+            ForEach(viewModel.currencies.indices, id: \.self) { index in
+                Text(viewModel.values[index])
                     .frame(maxWidth: .infinity)
                     .padding(10)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(index == selectedCurrencyIndex ? Color.orange : Color.blue, lineWidth: 2)
+                            .stroke(index == viewModel.selectedCurrencyIndex ? Color.orange : Color.blue, lineWidth: 2)
                     )
                     .simultaneousGesture(TapGesture().onEnded {
-                        selectedCurrencyIndex = index
-                        print(selectedCurrencyIndex)
+                        viewModel.selectedCurrencyIndex = index
                     })
             }
             
@@ -40,7 +37,7 @@ struct ContentView: View {
                 HStack {
                     ForEach(buttonsRow, id: \.self) { buttonText in
                         Button {
-                            buttonPressed(buttonText)
+                            viewModel.buttonPressed(buttonText)
                         } label: {
                             Text(buttonText)
                                 .frame(width: 80, height: 80)
@@ -54,30 +51,8 @@ struct ContentView: View {
             }
         }
         .padding()
-        .onAppear {
+        .onAppear() {
             viewModel.loadRate()
-        }
-    }
-    
-    private func buttonPressed(_ buttonText: String) {
-        switch buttonText {
-        case "C":
-            values[selectedCurrencyIndex] = "0"
-        case "←":
-            if values[selectedCurrencyIndex].count > 1 {
-                values[selectedCurrencyIndex].removeLast()
-                if values[selectedCurrencyIndex].last == "." {
-                    values[selectedCurrencyIndex].removeLast()
-                }
-            } else {
-                values[selectedCurrencyIndex] = "0"
-            }
-        default:
-            if values[selectedCurrencyIndex] == "0" {
-                values[selectedCurrencyIndex] = buttonText
-            } else {
-                values[selectedCurrencyIndex] += buttonText
-            }
         }
     }
 }
