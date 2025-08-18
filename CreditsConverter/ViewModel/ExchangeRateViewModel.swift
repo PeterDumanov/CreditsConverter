@@ -11,7 +11,10 @@ class ExchangeRateViewModel: ObservableObject {
     @Published var rates: [String : Double]?
     let currencies = ["EUR", "USD", "CRD"]
     @Published var values = Array(repeating: "0", count: 3)
-    @Published var selectedCurrencyIndex = 0
+    @Published var selectedCurrencyIndex = 0 {
+        didSet { justSelected = true }
+    }
+    private var justSelected: Bool = true
     
     func loadRate() {
             Task {
@@ -56,12 +59,13 @@ class ExchangeRateViewModel: ObservableObject {
                 values[selectedCurrencyIndex] = "0"
             }
         default:
-            if values[selectedCurrencyIndex] == "0" {
+            if values[selectedCurrencyIndex] == "0" || justSelected {
                 values[selectedCurrencyIndex] = buttonText
             } else {
                 values[selectedCurrencyIndex] += buttonText
             }
         }
+        justSelected = false
         convertValues()
     }
     

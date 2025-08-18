@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-
+    
     @StateObject private var viewModel = ExchangeRateViewModel()
     
     let buttons = [
@@ -19,40 +19,64 @@ struct ContentView: View {
     ]
     
     var body: some View {
-        VStack(spacing: 16) {
-            ForEach(viewModel.currencies.indices, id: \.self) { index in
-                Text(viewModel.values[index])
-                    .frame(maxWidth: .infinity)
+        ZStack {
+            LinearGradient(colors: [.black, .uiPrimary], startPoint: .center, endPoint: .bottom)
+                .ignoresSafeArea()
+
+                
+            VStack(spacing: 16) {
+                Spacer()
+                ForEach(viewModel.currencies.indices, id: \.self) { index in
+                    let isSelected = index == viewModel.selectedCurrencyIndex
+                    let primaryColor: Color = isSelected ? .uiSecondary : .uiPrimary
+
+                    ZStack {
+                        Text(viewModel.currencies[index])
+                            .foregroundColor(primaryColor)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Text(viewModel.values[index])
+                            .foregroundColor(primaryColor)
+                            .frame(maxWidth: .infinity)
+                    }
                     .padding(10)
+                    .contentShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(index == viewModel.selectedCurrencyIndex ? Color.orange : Color.blue, lineWidth: 2)
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(primaryColor, lineWidth: 2)
                     )
-                    .simultaneousGesture(TapGesture().onEnded {
+                    .onTapGesture {
                         viewModel.selectedCurrencyIndex = index
-                    })
-            }
-            
-            ForEach(buttons, id: \.self) { buttonsRow in
-                HStack {
-                    ForEach(buttonsRow, id: \.self) { buttonText in
-                        Button {
-                            viewModel.buttonPressed(buttonText)
-                        } label: {
-                            Text(buttonText)
-                                .frame(width: 80, height: 80)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.blue, lineWidth: 2)
-                                )
-                        }
                     }
                 }
+                
+                Spacer()
+                
+                ForEach(buttons, id: \.self) { buttonsRow in
+                    HStack {
+                        ForEach(buttonsRow, id: \.self) { buttonText in
+                            Spacer()
+                            Button {
+                                viewModel.buttonPressed(buttonText)
+                            } label: {
+                                Text(buttonText)
+                                    .frame(width: 80, height: 80)
+                                    .foregroundColor(.uiPrimary)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.uiPrimary, lineWidth: 2)
+                                    )
+                            }
+                            Spacer()
+                        }
+                    }
+                    Spacer()
+                }
             }
-        }
-        .padding()
-        .onAppear() {
-            viewModel.loadRate()
+            .padding()
+            .onAppear() {
+                viewModel.loadRate()
+            }
         }
     }
 }
