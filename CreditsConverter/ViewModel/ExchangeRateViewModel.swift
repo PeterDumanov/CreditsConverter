@@ -69,7 +69,7 @@ class ExchangeRateViewModel: ObservableObject {
         convertValues()
     }
     
-    func convertValues() {
+    private func convertValues() {
         if let rates = rates {
             let targetCurrency = currencies[selectedCurrencyIndex]
             let selectedNumericalValue = Double(values[selectedCurrencyIndex]) ?? 0.0
